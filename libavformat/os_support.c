@@ -27,6 +27,18 @@
 #include "avformat.h"
 #include "os_support.h"
 
+#if CONFIG_NETWORK
+#include <fcntl.h>
+#include <unistd.h>
+#if !HAVE_POLL_H
+#include <sys/time.h>
+#if HAVE_WINSOCK2_H
+#include <winsock2.h>
+#elif HAVE_SYS_SELECT_H
+#include <sys/select.h>
+#endif
+#endif
+
 #if defined(_WIN32) && !defined(__MINGW32CE__)
 #include <windows.h>
 
@@ -53,18 +65,6 @@ int ff_win32_open(const char *filename_utf8, int oflag, int pmode)
 
     return fd;
 }
-#endif
-
-#if CONFIG_NETWORK
-#include <fcntl.h>
-#include <unistd.h>
-#if !HAVE_POLL_H
-#include <sys/time.h>
-#if HAVE_WINSOCK2_H
-#include <winsock2.h>
-#elif HAVE_SYS_SELECT_H
-#include <sys/select.h>
-#endif
 #endif
 
 #include "network.h"
